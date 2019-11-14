@@ -29,11 +29,18 @@
 #define KEYWIDTH  18
 #define KEYHEIGHT 72
 
+#define _min_(x,y) (((x)<(y))?(x):(y))
+
+float getWidth( int numOctaves )
+{
+	return KEYWIDTH * _min_(75, numOctaves * 7);
+}
+
 PianoScene::PianoScene ( const int baseOctave, 
                          const int numOctaves, 
                          const QColor& keyPressedColor,
                          QObject * parent )
-    : QGraphicsScene( QRectF(0, 0, KEYWIDTH * numOctaves * 7, KEYHEIGHT), parent ),
+    : QGraphicsScene( QRectF(0, 0, getWidth( numOctaves ), KEYHEIGHT), parent ),
     m_baseOctave( baseOctave ),
     m_numOctaves( numOctaves ),
     m_minNote( 0 ),
@@ -56,7 +63,7 @@ PianoScene::PianoScene ( const int baseOctave,
 {
     QBrush hilightBrush(m_keyPressedColor.isValid() ? m_keyPressedColor : QApplication::palette().highlight());
     QFont lblFont(QApplication::font());
-    int i, numkeys = m_numOctaves * 12;
+    int i, numkeys = _min_(128, m_numOctaves * 12);
     lblFont.setPointSize(KEYLABELFONTSIZE);
     for(i = 0; i < numkeys; ++i)
     {
